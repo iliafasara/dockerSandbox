@@ -1,0 +1,22 @@
+FROM python:3.9-alpine
+
+# Устанавливаем минимальные пакеты
+RUN apk add --no-cache gcc musl-dev
+
+# Создаем пользователя без привилегий
+RUN adduser -D sandboxuser
+
+# Создаем рабочую директорию
+WORKDIR /sandbox
+
+# Копируем скрипт-обертку
+COPY runner.py /sandbox/runner.py
+
+# Меняем владельца
+RUN chown -R sandboxuser:sandboxuser /sandbox
+
+# Переключаемся на непривилегированного пользователя
+USER sandboxuser
+
+# Запускаем без входа в систему (для безопасности)
+ENTRYPOINT ["python", "/sandbox/runner.py"]

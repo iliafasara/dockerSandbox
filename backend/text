@@ -1,0 +1,9 @@
+python-sandbox/
+├── app.py              # Основное Flask приложение
+├── docker_runner.py    # Выполнение кода в Docker
+├── security.py         # Проверка безопасности кода
+├── index.html          # Главная страница
+├── style.css           # Стили
+├── script.js           # Клиентская логика
+├── requirements.txt    # Python зависимости
+└── README.md           # Документация

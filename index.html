@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Sandbox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Хедер -->
+        <header>
+            <div class="header-main">
+                <div class="logo">
+                    <i class="fas fa-code"></i>
+                    <h1>Python Sandbox</h1>
+                </div>
+                <p class="subtitle">Пишите код слева - результат справа</p>
+            </div>
+            
+            <div class="header-features">
+                <div class="feature">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Запустить код</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Очистить код</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-save"></i>
+                    <span>Автосохранение</span>
+                </div>
+                <button id="instructions-btn" class="feature-btn">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Как работает</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main>
+            <!-- Грид с двумя колонками -->
+            <div class="content-grid">
+                <!-- Левая колонка: Редактор кода -->
+                <div class="editor-panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-keyboard"></i> Пишите код здесь</h2>
+                        <div class="examples-control">
+                            <select id="examples-select">
+                                <option value="">Примеры кода...</option>
+                                <option value="calculator">Калькулятор</option>
+                                <option value="input_example">Работа с input()</option>
+                                <option value="fibonacci">Числа Фибоначчи</option>
+                                <option value="lists">Работа со списками</option>
+                            </select>
+                            <button id="load-example-btn" class="small-btn">
+                                <i class="fas fa-download"></i> Загрузить
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Редактор кода -->
+                    <div class="code-editor-container">
+                        <textarea id="code-input"># Пример калькулятора
+print("=== КАЛЬКУЛЯТОР ===")
+
+# Получаем числа от пользователя
+num1 = float(input("Введите первое число: "))
+num2 = float(input("Введите второе число: "))
+operation = input("Выберите операцию (+, -, *, /): ")
+
+# Выполняем операцию
+if operation == '+':
+    result = num1 + num2
+    print(f"{num1} + {num2} = {result}")
+elif operation == '-':
+    result = num1 - num2
+    print(f"{num1} - {num2} = {result}")
+elif operation == '*':
+    result = num1 * num2
+    print(f"{num1} * {num2} = {result}")
+elif operation == '/':
+    if num2 != 0:
+        result = num1 / num2
+        print(f"{num1} / {num2} = {result}")
+    else:
+        print("Ошибка: деление на ноль!")
+else:
+    print("Неизвестная операция")
+
+print("Готово!")</textarea>
+                    </div>
+                    
+                    <!-- Контролы редактора -->
+                    <div class="editor-controls">
+                        <button id="run-btn" class="control-btn primary-btn">
+                            <i class="fas fa-play"></i> Запустить код
+                        </button>
+                        <button id="clear-btn" class="control-btn secondary-btn">
+                            <i class="fas fa-trash"></i> Очистить код
+                        </button>
+                        <button id="save-btn" class="control-btn success-btn">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        
+                        <div class="auto-save-toggle">
+                            <input type="checkbox" id="auto-save-toggle" checked>
+                            <label for="auto-save-toggle">Автосохранение</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая колонка: Консоль вывода и ввода -->
+                <div class="console-panel">
+                    <div class="panel-header">
+                        <h2><i class="fas fa-terminal"></i> Результат и ввод данных</h2>
+                        <div class="status-indicator">
+                            <span id="status-label">Готов</span>
+                            <div id="status-light" class="status-light ready"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Консоль вывода -->
+                    <div class="console-output-container">
+                        <div class="console-output" id="output-history">
+                            <!-- Сообщения будут добавляться здесь через JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Поле ввода для данных -->
+                    <div class="input-section">
+                        <div class="input-header">
+                            <i class="fas fa-keyboard"></i>
+                            <span>Ввод данных для input():</span>
+                            <div class="input-hint" id="current-prompt">Готов к вводу...</div>
+                        </div>
+                        <div class="input-controls">
+                            <input type="text" id="user-input" placeholder="Введите значение и нажмите Enter..." 
+                                   autocomplete="off" disabled>
+                            <button id="submit-input-btn" class="submit-btn" disabled>
+                                <i class="fas fa-paper-plane"></i> Отправить
+                            </button>
+                        </div>
+                        <div class="input-examples">
+                            <span>Примеры:</span>
+                            <button class="example-btn" data-value="10">10</button>
+                            <button class="example-btn" data-value="5">5</button>
+                            <button class="example-btn" data-value="hello">hello</button>
+                            <button class="example-btn" data-value="123">123</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Инфо панель -->
+                    <div class="info-panel">
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <div class="info-title">Время выполнения</div>
+                                <div id="execution-time" class="info-value">0.000 сек</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-code"></i>
+                            <div>
+                                <div class="info-title">Строк кода</div>
+                                <div id="code-lines" class="info-value">20</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <div class="info-title">Безопасность</div>
+                                <div id="security-status" class="info-value safe">✓ Проверено</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Управление консолью -->
+                    <div class="console-controls">
+                        <button id="clear-console-btn" class="control-btn secondary-btn">
+                            <i class="fas fa-trash"></i> Очистить вывод
+                        </button>
+                        <button id="copy-output-btn" class="control-btn success-btn">
+                            <i class="fas fa-copy"></i> Копировать результат
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Футер -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Python Sandbox <span class="version-badge">v2.1</span></h4>
+                    <p>Простой и удобный запуск Python кода</p>
+                    <div class="project-info">
+                        <p><i class="fas fa-graduation-cap"></i> Для дисциплин: ТРПО и ИСР</p>
+                        <p><i class="fas fa-calendar"></i> 2024 год</p>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Возможности</h4>
+                    <ul>
+                        <li>Запуск Python кода</li>
+                        <li>Работа с input()</li>
+                        <li>Безопасное выполнение</li>
+                        <li>Автосохранение</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Управление</h4>
+                    <ul>
+                        <li>Запустить код (Ctrl+Enter)</li>
+                        <li>Очистить код</li>
+                        <li>Сохранить код (Ctrl+S)</li>
+                        <li>Очистить вывод (Ctrl+L)</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Проект</h4>
+                    <p>Учебный проект для программирования</p>
+                    <p><i class="fas fa-users"></i> Всего авторов: 5</p>
+                    <p><i class="fas fa-laptop-code"></i> Работа с файлами ввода-вывода</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Python Sandbox | Учебный проект</p>
+            </div>
+        </footer>
+
+        <!-- Модальное окно инструкции -->
+        <div id="instructions-modal" class="modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2><i class="fas fa-book"></i> Как пользоваться Python Sandbox</h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="instruction-step">
+                        <h3><i class="fas fa-arrow-right"></i> Шаг 1: Пишите код в левой панели</h3>
+                        <p>• Вводите любой Python код в редакторе слева</p>
+                        <p>• Используйте готовые примеры для быстрого старта</p>
+                        <p>• Код автоматически сохраняется</p>
+                    </div>
+                    
+                    <div class="instruction-step">
+                        <h3><i class="fas fa-play"></i> Шаг 2: Запускайте код</h3>
+                        <p>• Нажмите кнопку "Запустить код" или Ctrl+Enter</p>
+                        <p>• Код начнет выполняться построчно</p>
+                        <p>• Результат появится в правой панели</p>
+                    </div>
+                    
+                    <div class="instruction-step">
+                        <h3><i class="fas fa-keyboard"></i> Шаг 3: Работа с input()</h3>
+                        <p>• Когда код дойдет до input(), в правой панели появится поле ввода</p>
+                        <p>• Введите нужное значение и нажмите Enter или "Отправить"</p>
+                        <p>• Код продолжит выполнение с введенным значением</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="try-calculator-btn" class="modal-btn primary-btn">Попробовать калькулятор</button>
+                    <button class="modal-btn secondary-btn close-modal-btn">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
