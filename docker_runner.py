@@ -5,22 +5,16 @@ import os
 from typing import Dict, Any
 
 class DockerCodeRunner:
-    """Класс для выполнения кода в изолированной среде"""
+
     
     def __init__(self, use_docker=True):
-        """
-        Инициализация раннера
-        
-        Args:
-            use_docker: Использовать ли Docker. Если False, будет использоваться безопасный exec.
-        """
+
         self.use_docker = use_docker
         self.docker_available = self._check_docker()
         
         print(f"DockerRunner initialized: use_docker={use_docker}, docker_available={self.docker_available}")
         
     def _check_docker(self) -> bool:
-        """Проверяет доступность Docker"""
         try:
             result = subprocess.run(
                 ['docker', '--version'],
@@ -33,23 +27,13 @@ class DockerCodeRunner:
             return False
     
     def run_code(self, code: str, timeout: int = 10) -> Dict[str, Any]:
-        """
-        Выполняет Python код
-        
-        Args:
-            code: Python код для выполнения
-            timeout: Максимальное время выполнения в секундах
-            
-        Returns:
-            Словарь с результатом выполнения
-        """
+
         if self.use_docker and self.docker_available:
             return self._run_with_docker(code, timeout)
         else:
             return self._run_with_sandbox(code, timeout)
     
     def _run_with_docker(self, code: str, timeout: int) -> Dict[str, Any]:
-        """Выполняет код в Docker контейнере"""
         try:
             # Подготавливаем код
             safe_code = self._prepare_code_for_docker(code)
@@ -110,7 +94,6 @@ class DockerCodeRunner:
             }
     
     def _run_with_sandbox(self, code: str, timeout: int) -> Dict[str, Any]:
-        """Безопасное выполнение кода без Docker"""
         try:
             # Создаем безопасное окружение
             safe_globals = {
@@ -214,7 +197,6 @@ class DockerCodeRunner:
             }
     
     def _prepare_code_for_docker(self, code: str) -> str:
-        """Подготавливает код для выполнения в Docker"""
         # Экранируем кавычки и переносы строк
         escaped_code = code.replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'")
         
