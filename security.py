@@ -1,7 +1,6 @@
 import re
 
 class CodeSecurity:
-    """Класс для проверки безопасности Python кода"""
     
     # Запрещенные ключевые слова и конструкции
     FORBIDDEN_KEYWORDS = [
@@ -41,9 +40,6 @@ class CodeSecurity:
     def is_code_safe(cls, code: str) -> tuple:
         """
         Проверяет код на безопасность
-        
-        Returns:
-            (is_safe: bool, reason: str)
         """
         # Проверка 1: Пустой код
         if not code or not code.strip():
@@ -103,21 +99,16 @@ class CodeSecurity:
     def sanitize_code(cls, code: str) -> str:
         """
         Очищает код от потенциально опасных конструкций
-        
-        Returns:
-            Очищенный код
         """
         lines = code.split('\n')
         sanitized_lines = []
         
         for line in lines:
-            # Удаляем комментарии с потенциально опасным содержимым
             if '#' in line:
                 comment_start = line.index('#')
                 comment = line[comment_start:]
                 line_without_comment = line[:comment_start]
                 
-                # Проверяем комментарий на опасные слова
                 dangerous_in_comment = False
                 for keyword in cls.FORBIDDEN_KEYWORDS + cls.FORBIDDEN_MODULES:
                     if keyword in comment:
@@ -127,13 +118,12 @@ class CodeSecurity:
                 if dangerous_in_comment:
                     line = line_without_comment
             
-            # Добавляем очищенную строку
             sanitized_lines.append(line)
         
         return '\n'.join(sanitized_lines)
 
 
-# Тестирование безопасности
+# Тестирование
 if __name__ == "__main__":
     test_cases = [
         ("print('Hello')", True),
