@@ -6,9 +6,7 @@ import traceback
 import io
 
 def safe_execute(code):
-    """
-    Безопасное выполнение Python кода
-    """
+
     # Создаем контекст для выполнения
     output_buffer = io.StringIO()
     
@@ -113,9 +111,7 @@ def safe_execute(code):
         sys.stderr = old_stderr
 
 def main():
-    """
-    Основная функция для выполнения кода из контейнера
-    """
+
     try:
         # Читаем ввод из stdin
         input_data = sys.stdin.read()
