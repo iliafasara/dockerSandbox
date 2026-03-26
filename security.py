@@ -38,9 +38,7 @@ class CodeSecurity:
     
     @classmethod
     def is_code_safe(cls, code: str) -> tuple:
-        """
-        Проверяет код на безопасность
-        """
+
         # Проверка 1: Пустой код
         if not code or not code.strip():
             return True, "Empty code"
